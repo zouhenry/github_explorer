@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Github Explorer</title>
+    <link rel="stylesheet" type="text/css" href="vendor/bootstrap/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container" id="github-app">
+
+</div>
+
+
+<script type="text/x-handlebars" data-template-name="application">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Github Explorer!</h1>
+            <hr/>
+            {{outlet}}
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars" data-template-name="index">
+    <p>This is the Github explore for all of our favorite devs</p>
+    <ul>
+        {{#each}}
+        <li>{{#link-to 'user' this.login}}{{name}}{{/link-to}}</li>
+        {{/each}}
+    </ul>
+    <p>
+        <button class="btn btn-success" {{action "clickMe"}}>Click Me!</button>
+    </p>
+    <p>{{renderedOn}}</p>
+</script>
+
+<script type="text/x-handlebars" data-template-name="user">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="well">
+                <p class="text-center">
+                    {{#link-to 'user' this}}<img {{bind-attr src=avatar_url}} style="width:140px">{{/link-to}}
+                </p>
+                <h4>{{#link-to 'user' this}}{{name}}{{/link-to}}</h4>
+
+                <p>
+                    {{company}}<br/>
+                    {{location}}<br/>
+                    {{email}}<br/>
+                </p>
+                <hr/>
+                <table class="table table-striped">
+                    <tr>
+                        <td>Followers:</td>
+                        <td>{{followers}}</td>
+                    </tr>
+                    <tr>
+                        <td>Repositories:</td>
+                        <td>{{public_repos}}</td>
+                    </tr>
+                    <tr>
+                        <td>Gists:</td>
+                        <td>{{public_gists}}</td>
+                    </tr>
+                </table>
+                <p>{{#link-to 'index'}}Back{{/link-to}}</p>
+            </div>
+        </div>
+        <div class="col-md-8">
+            {{outlet}}
+        </div>
+    </div>
+
+</script>
+<script type="text/x-handlebars" id="user/index">
+    <h2>{{name}}'s Github</h2>
+    <hr/>
+    <ul>
+        <li>{{#link-to 'repositories' this}}Repositories{{/link-to}}</li>
+        <li><a href="#">News and events</a></li>
+        <li><a href="#">Gists</a></li>
+    </ul>
+</script>
+
+<script type="text/x-handlebars" id="repositories">
+    <h1>{{name}} repo</h1>
+    <ol class="breadcrumb">
+        <li>{{#link-to 'index'}}Dev{{/link-to}}</li>
+        <li>{{#link-to 'user' user}}{{user.name}}{{/link-to}}</li>
+        <li class="active">Repositories</li>
+    </ol>
+    <table class="table table-striped">
+        {{#each}}
+        <tr>
+            <td>{{#link-to 'repository' this.name}}{{name}}{{/link-to}}</td>
+            <td>{{description}}</td>
+        </tr>
+        {{/each}}
+    </table>
+</script>
+
+<script type="text/x-handlebars" id="repository">
+    <ol class="breadcrumb">
+        <li>{{#link-to 'index'}}Dev{{/link-to}}</li>
+        <li>{{#link-to 'user' user}}{{user.name}}{{/link-to}}</li>
+        <li>{{#link-to 'repositories'}}Repositories{{/link-to}}</li>
+        <li class="active">{{name}}</li>
+    </ol>
+    <h1>{{name}} Repo</h1>
+
+    <p>{{description}}</p>
+    <ul>
+        <li>Language: {{language}}</li>
+        <li>Watchers: {{watchers}}</li>
+        <li>Open Issues: {{open_issues_count}}</li>
+        <li>Clone: <b>{{clone_url}}</b></li>
+        <li>Web: {{language}}</li>
+    </ul>
+    <hr/>
+    {{#unless forked}}
+    <ul class="list-inline">
+        <li>{{#link-to 'issues'}}Issues{{/link-to}}</li>
+        <li>{{#link-to 'forks'}}forks{{/link-to}}</li>
+        <li>{{#link-to 'commits'}}commits{{/link-to}}</li>
+    </ul>
+    {{else}}
+        <p class="text-muted">Forked {{fromDate created_at}}</p>
+    {{outlet}}
+    {{/unless}}
+</script>
+
+<script type="text/x-handlebars" id="issues">
+    <h4>Issues</h4>
+    <table class="table table-striped">
+        {{#each}}
+        <tr>
+            <td><img {{bind-attr src=user.avatar_url}} style="width:110px" /></td>
+            <td>{{title}}</td>
+            <td>{{fromDate created_at}}</td>
+        </tr>
+        {[else}}
+        <tr>
+            <td>
+                <p class="text-muted">No Issues yet!</p>
+            </td>
+        </tr>
+        {{/each}}
+    </table>
+</script>
+
+<script type="text/x-handlebars" id="forks">
+    <h4>Forks</h4>
+    <table class="table table-striped">
+        {{#each}}
+        <tr>
+            <td><img {{bind-attr src=owner.avatar_url}} style="width:110px" /></td>
+            <td>{{full_name}}</td>
+            <td>{{fromDate created_at}}</td>
+        </tr>
+        {{/each}}
+    </table>
+</script>
+<script type="text/x-handlebars" id="commits">
+    <h1>commits</h1>
+</script>
+<script type="text/javascript" src="vendor/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="vendor/handlebars/handlebars.js"></script>
+<script type="text/javascript" src="vendor/ember/ember.js"></script>
+<script type="text/javascript" src="vendor/bootstrap/dist/js/bootstrap.js"></script>
+<script type="text/javascript" src="vendor/momentjs/moment.js"></script>
+<script type="text/javascript" src="app.js"></script>
+</body>
+</html>
